@@ -1,30 +1,37 @@
 import re
+import argparse
 
 LOG = 'C:/Users/HPz420/Desktop/git/auto_logs/WebLogFile.log'
+
+parser = argparse.ArgumentParser(description='your friendly neighborhood log collector')
+parser.add_argument(
+    '-m',
+    '--match-string',
+    help='string to match log lines on',
+    required=False,
+    default='Error',
+)
+
+args = parser.parse_args()
+
 
 def is_line_dated(line_to_check):
     if re.match('^[0-9]{4}/[0-9]{2}/[0-9]{2}\s.+', line_to_check):
         return True
     return False
 
-# print(is_line_dated('2019/04/22 04:37:58.107	UEM-CONSOLE	4'))
 
 with open(LOG, 'r') as f:
     lines = f.readlines()
     print(len(lines))
-    lineafter = False
+    line_after = False
     for line in lines:
-        if 'Error' in line:
+        if args.match_string in line:
             print(line)
-            lineafter = True
+            line_after = True
             continue
-        if lineafter == True:
+        if line_after == True:
             if is_line_dated(line) == True:
-                lineafter = False
+                line_after = False
                 continue
             print(line)
-        #     if is_line_dated(line) == False:
-        #         print(line)
-        #     lineafter = False
-
-
